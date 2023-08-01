@@ -1,0 +1,47 @@
+<div class="mat-elevation-z8">
+    <mat-table matSort (matSortChange)="announceSortChange($event)" [dataSource]="dataSource" cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal"> 
+        <ng-container *ngFor="let col of displayedColumns;let i = index" [matColumnDef]="col">
+            <mat-header-cell *matHeaderCellDef cdkDragLockAxis="x"  cdkDrag mat-sort-header>
+                {{col}}
+                <button mat-icon-button click-stop-propagation class="btn-toggle table-header-button btn-sm"
+                    [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu>
+                    <div mat-menu-item mat-filter-item [disableRipple]="true" class="menu-title">
+                        {{col}}
+                    </div>
+                    <div mat-menu-item mat-filter-item [disableRipple]="true">
+                        <mat-form-field>
+                            <mat-select matInput [panelClass]="'mat-elevation-z10'" placeholder='Conditions'
+                                [(value)]="searchCondition[col]">
+                                <mat-option *ngFor="let  condition of conditionsList"
+                                    [value]="condition.value">{{condition.label}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div mat-menu-item mat-filter-item [disableRipple]="true">
+                        <mat-form-field>
+                            <input matInput placeholder="Value" [(ngModel)]="searchValue[col]">
+                        </mat-form-field>
+                    </div>
+
+                    <div mat-menu-item mat-filter-item [disableRipple]="true">
+                        <button mat-raised-button (click)="clearColumn(col)">Clear</button>
+                        <button mat-raised-button color="primary" (click)="applyFilter()">Search</button>
+                    </div>
+                </mat-menu>
+            </mat-header-cell>
+
+            <mat-cell *matCellDef="let element"> {{element[col]}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" [pageIndex]="pageIndex" [length]="length" showFirstLastButtons
+        aria-label="Select page">
+    </mat-paginator>
+</div>

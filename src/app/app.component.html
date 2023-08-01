@@ -1,0 +1,12 @@
+<qst-data-grid 
+    [dataSource]="dataSource" 
+    [displayedColumns]="displayColumns"
+    [pageSizeOptions]="[5,10,20]"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [length]="length"
+    (pageChange)="onPageChange($event)"
+    (sortChange)="onSortChange($event)"
+    (filterChange)="onFilterChange($event)">
+
+</qst-data-grid>
