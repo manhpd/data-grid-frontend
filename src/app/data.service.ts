@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 	providedIn: 'root'
 })
 export class DataService {
-	private baseUrl = 'http://localhost:8080/api/movies';
+	private baseUrl = 'https://manh-movie-app.herokuapp.com/api/movies';
 
 	constructor(private _http: HttpClient) {
 	}
