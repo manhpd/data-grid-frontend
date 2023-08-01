@@ -13,16 +13,6 @@
                     </div>
                     <div mat-menu-item mat-filter-item [disableRipple]="true">
                         <mat-form-field>
-                            <mat-select matInput [panelClass]="'mat-elevation-z10'" placeholder='Conditions'
-                                [(value)]="searchCondition[col]">
-                                <mat-option *ngFor="let  condition of conditionsList"
-                                    [value]="condition.value">{{condition.label}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-
-                    <div mat-menu-item mat-filter-item [disableRipple]="true">
-                        <mat-form-field>
                             <input matInput placeholder="Value" [(ngModel)]="searchValue[col]">
                         </mat-form-field>
                     </div>
