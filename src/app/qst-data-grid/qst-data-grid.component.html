@@ -1,35 +1,40 @@
 <div class="mat-elevation-z8">
     <mat-table matSort (matSortChange)="announceSortChange($event)" [dataSource]="dataSource" cdkDropList
         (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
-        <ng-container *ngFor="let col of displayedColumns;let i = index" [matColumnDef]="col">
+        <ng-container *ngFor="let col of displayedColumns;let i = index" [matColumnDef]="col.name">
             <mat-header-cell *matHeaderCellDef cdkDragLockAxis="x" cdkDrag mat-sort-header>
-                {{col}}
+                {{col.title}}
                 <button mat-icon-button click-stop-propagation class="btn-toggle table-header-button btn-sm"
                     [matMenuTriggerFor]="menu">
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu>
                     <div mat-menu-item mat-filter-item [disableRipple]="true" class="menu-title">
-                        {{col}}
+                        {{col.title}}
                     </div>
                     <div mat-menu-item mat-filter-item [disableRipple]="true">
                         <mat-form-field>
-                            <input matInput placeholder="Value" [(ngModel)]="searchValue[col]">
+                            <input matInput placeholder="Value" [(ngModel)]="searchValue[col.name]">
                         </mat-form-field>
                     </div>
 
                     <div mat-menu-item mat-filter-item [disableRipple]="true">
-                        <button mat-raised-button (click)="clearColumn(col)">Clear</button>
+                        <button mat-raised-button (click)="clearColumn(col.name)">Clear</button>
                         <button mat-raised-button color="primary" (click)="applyFilter()">Search</button>
                     </div>
                 </mat-menu>
             </mat-header-cell>
 
-            <mat-cell *matCellDef="let element"> {{element[col]}} </mat-cell>
+            <mat-cell *matCellDef="let element">
+                <ng-container *ngComponentOutlet="getComponentByType(col.type); injector: getInjector(element[col.name])" >
+                    {{element[col.name]}} 
+                </ng-container> 
+               
+            </mat-cell>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-header-row *matHeaderRowDef="displayedColumnsKeys"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumnsKeys;"></mat-row>
 
         <mat-row *matNoDataRow>
             <td class="mat-cell" [attr.colspan]="displayedColumns.length">

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DataService } from './data.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
+import { ColumnMetaModel } from 'src/model/column-meta/column.meta.model';
 
 @Component({
     selector: 'app-root',
@@ -13,7 +14,25 @@ export class AppComponent {
     constructor(private _dataService: DataService) {
     }
 
-    displayColumns = ['name', 'genre', 'rating', 'year'];
+    displayColumns: ColumnMetaModel[] = [
+        {
+            name: 'name',
+            type: 'string',
+            title: 'Name'
+        },
+        {
+            name: 'genre',
+            type: 'array',
+            title: 'Genre'
+        }, {
+            name: 'rating',
+            type: 'rating',
+            title: 'Rating'
+        }, {
+            name: 'year',
+            type: 'number',
+            title: 'Year'
+        }];
     dataSource = new MatTableDataSource<any>(); // TODO - replace any with a generic type
     length = 0;
     pageIndex = 0;
@@ -40,7 +59,7 @@ export class AppComponent {
     onPageChange(event: any) {
         this.isLoading = true;
         this.dataSource = new MatTableDataSource<any>([]);
-        
+
         this._dataService.getData(event.pageIndex, event.pageSize, this.sort.active, this.sort.direction).subscribe(data => {
             this.dataSource = new MatTableDataSource<any>(data.movies);
             this.length = data.total;
@@ -67,11 +86,11 @@ export class AppComponent {
     onFilterChange(filterState: any) {
         this.isLoading = true;
         this.dataSource = new MatTableDataSource<any>([]);
-        let regexQuery: any = {} ;
+        let regexQuery: any = {};
         Object.keys(filterState).map(key => {
-            regexQuery[key] = { '$regex' : filterState[key], '$options' : 'i'};
+            regexQuery[key] = { '$regex': filterState[key], '$options': 'i' };
         });
-        this._dataService.getData(0, this.pageSize, this.sort.active, this.sort.direction, regexQuery).subscribe(data => { 
+        this._dataService.getData(0, this.pageSize, this.sort.active, this.sort.direction, regexQuery).subscribe(data => {
             this.dataSource = new MatTableDataSource<any>(data.movies);
             this.length = data.total;
             this.pageIndex = data.page;

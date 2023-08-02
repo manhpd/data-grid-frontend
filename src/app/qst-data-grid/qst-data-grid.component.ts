@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Injector, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
@@ -14,6 +14,11 @@ import { FilterItemDirective } from './filter-item.directive';
 import { ClickStopPropagation } from './menu-button.directive';
 import {  CdkDragDrop, CdkDragStart, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ColumnMetaModel } from 'src/model/column-meta/column.meta.model';
+import { CellMap } from './cell-component/cell.map';
+import { ArrayCellComponent } from './cell-component/array-component/array.cell.component';
+import { TextCellComponent } from './cell-component/text-component/text.cell.component';
+import { InputItem } from 'src/model/input/input.model';
 
 @Component({
     selector: 'qst-data-grid',
@@ -35,6 +40,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         ClickStopPropagation,
         DragDropModule,
         MatProgressSpinnerModule,
+        ArrayCellComponent,
+        TextCellComponent,
         CommonModule
     ],
 })
@@ -42,7 +49,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 export class QstDataGridComponent implements AfterViewInit {
-    @Input() displayedColumns: string[] = [];
+    @Input() displayedColumns: ColumnMetaModel[] = [];
     @Input() dataSource = new MatTableDataSource<any>(); // TODO - replace any with a generic type
     @Input() pageSize = 10;
     @Input() pageSizeOptions = [5, 10, 25, 100];
@@ -57,9 +64,16 @@ export class QstDataGridComponent implements AfterViewInit {
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+    get displayedColumnsKeys(): string[] {
+        return this.displayedColumns.map((column) => column.name);
+    }
+
     public conditionsList = CONDITIONS_LIST;
     public searchValue: any = {};
     public searchCondition: any = {};
+
+    constructor(private inj: Injector) {
+    }
 
     ngAfterViewInit() {
         this.paginator.page.subscribe((event) => this.onPaginateChange(event));
@@ -85,6 +99,18 @@ export class QstDataGridComponent implements AfterViewInit {
 
     drop(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
+    }
+
+    getComponentByType(type: string) {
+        return CellMap.get(type) || TextCellComponent;
+    }
+
+    getInjector(value: any) {
+        let injector = Injector.create([
+            { provide: InputItem, useValue: {value} }
+          ], this.inj);
+        
+        return injector;
     }
 }
 

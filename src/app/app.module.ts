@@ -5,6 +5,8 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { AppComponent } from "./app.component";
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { ArrayCellComponent } from "./qst-data-grid/cell-component/array-component/array.cell.component";
+import { TextCellComponent } from "./qst-data-grid/cell-component/text-component/text.cell.component";
 
 @NgModule({
     declarations: [
@@ -15,7 +17,9 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
         BrowserAnimationsModule,
         HttpClientModule,
         QstDataGridComponent,
-        DragDropModule
+        DragDropModule,
+        ArrayCellComponent,
+        TextCellComponent
     ],
     providers: [],
     bootstrap: [AppComponent]
