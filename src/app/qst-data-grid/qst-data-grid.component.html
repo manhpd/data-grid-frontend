@@ -1,7 +1,8 @@
 <div class="mat-elevation-z8">
-    <mat-table matSort (matSortChange)="announceSortChange($event)" [dataSource]="dataSource" cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal"> 
+    <mat-table matSort (matSortChange)="announceSortChange($event)" [dataSource]="dataSource" cdkDropList
+        (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
         <ng-container *ngFor="let col of displayedColumns;let i = index" [matColumnDef]="col">
-            <mat-header-cell *matHeaderCellDef cdkDragLockAxis="x"  cdkDrag mat-sort-header>
+            <mat-header-cell *matHeaderCellDef cdkDragLockAxis="x" cdkDrag mat-sort-header>
                 {{col}}
                 <button mat-icon-button click-stop-propagation class="btn-toggle table-header-button btn-sm"
                     [matMenuTriggerFor]="menu">
@@ -29,7 +30,19 @@
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+        <mat-row *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                No data.
+            </td>
+        </mat-row>
     </mat-table>
+
+
+    <div *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center; background: white;">
+        <mat-progress-spinner color="primary" mode="indeterminate">
+        </mat-progress-spinner>
+    </div>
 
     <mat-paginator [pageSizeOptions]="pageSizeOptions" [pageIndex]="pageIndex" [length]="length" showFirstLastButtons
         aria-label="Select page">

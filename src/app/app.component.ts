@@ -24,38 +24,49 @@ export class AppComponent {
     };
 
     filterState: any = {};
+    isLoading = false;
 
     ngOnInit() {
+        this.isLoading = true;
         this._dataService.getData().subscribe(data => {
             this.dataSource = new MatTableDataSource<any>(data.movies);
             this.length = data.total;
             this.pageIndex = data.page;
             this.pageSize = data.limit;
+            this.isLoading = false;
         });
     }
 
     onPageChange(event: any) {
-        console.log(event);
+        this.isLoading = true;
+        this.dataSource = new MatTableDataSource<any>([]);
+        
         this._dataService.getData(event.pageIndex, event.pageSize, this.sort.active, this.sort.direction).subscribe(data => {
             this.dataSource = new MatTableDataSource<any>(data.movies);
             this.length = data.total;
             this.pageIndex = data.page;
             this.pageSize = data.limit;
+            this.isLoading = false;
         });
     }
 
     onSortChange(sortState: Sort) {
+        this.isLoading = true;
+        this.dataSource = new MatTableDataSource<any>([]);
+
         this._dataService.getData(0, this.pageSize, sortState.active, sortState.direction).subscribe(data => {
             this.dataSource = new MatTableDataSource<any>(data.movies);
             this.sort = sortState;
             this.length = data.total;
             this.pageIndex = data.page;
             this.pageSize = data.limit;
+            this.isLoading = false;
         });
     }
 
     onFilterChange(filterState: any) {
-        console.log(filterState);
+        this.isLoading = true;
+        this.dataSource = new MatTableDataSource<any>([]);
         let regexQuery: any = {} ;
         Object.keys(filterState).map(key => {
             regexQuery[key] = { '$regex' : filterState[key], '$options' : 'i'};
@@ -66,6 +77,7 @@ export class AppComponent {
             this.pageIndex = data.page;
             this.pageSize = data.limit;
             this.filterState = filterState;
+            this.isLoading = false;
         });
     }
 }

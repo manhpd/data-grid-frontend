@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { FilterItemDirective } from './filter-item.directive';
 import { ClickStopPropagation } from './menu-button.directive';
 import {  CdkDragDrop, CdkDragStart, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'qst-data-grid',
@@ -33,6 +34,7 @@ import {  CdkDragDrop, CdkDragStart, CdkDropList, DragDropModule, moveItemInArra
         FilterItemDirective,
         ClickStopPropagation,
         DragDropModule,
+        MatProgressSpinnerModule,
         CommonModule
     ],
 })
@@ -46,6 +48,7 @@ export class QstDataGridComponent implements AfterViewInit {
     @Input() pageSizeOptions = [5, 10, 25, 100];
     @Input() length = 0;
     @Input() pageIndex = 0;
+    @Input() isLoading = false;
 
     @Output() pageChange = new EventEmitter<any>();
     @Output() sortChange = new EventEmitter<any>();
@@ -82,7 +85,7 @@ export class QstDataGridComponent implements AfterViewInit {
 
     drop(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
-      }
+    }
 }
 
 export const CONDITIONS_LIST = [
