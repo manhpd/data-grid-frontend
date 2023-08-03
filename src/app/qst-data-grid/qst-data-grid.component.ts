@@ -19,7 +19,8 @@ import { CellMap } from './cell-component/cell.map';
 import { ArrayCellComponent } from './cell-component/array-component/array.cell.component';
 import { TextCellComponent } from './cell-component/text-component/text.cell.component';
 import { InputItem } from 'src/model/input/input.model';
-
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 @Component({
     selector: 'qst-data-grid',
     styleUrls: ['qst-data-grid.component.scss'],
@@ -28,8 +29,10 @@ import { InputItem } from 'src/model/input/input.model';
     imports: [
         MatTableModule,
         MatPaginatorModule,
+        MatCheckboxModule,
         MatSortModule,
         MatButtonModule,
+        MatSidenavModule,
         MatIconModule,
         MatMenuModule,
         MatInputModule,
@@ -56,7 +59,7 @@ export class QstDataGridComponent implements AfterViewInit {
     @Input() length = 0;
     @Input() pageIndex = 0;
     @Input() isLoading = false;
-
+    @Input() title: string = "";
     @Output() pageChange = new EventEmitter<any>();
     @Output() sortChange = new EventEmitter<any>();
     @Output() filterChange = new EventEmitter<any>();
@@ -64,8 +67,10 @@ export class QstDataGridComponent implements AfterViewInit {
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+    public opened = false;
+
     get displayedColumnsKeys(): string[] {
-        return this.displayedColumns.map((column) => column.name);
+        return this.displayedColumns.filter((col) => col.display).map((column) => column.name);
     }
 
     public conditionsList = CONDITIONS_LIST;

@@ -18,20 +18,31 @@ export class AppComponent {
         {
             name: 'name',
             type: 'string',
-            title: 'Name'
+            title: 'Name',
+            order: 0,
+            display: true
         },
         {
             name: 'genre',
             type: 'array',
-            title: 'Genre'
-        }, {
+            title: 'Genre',
+            order: 1,
+            display: true
+        }, 
+        {
             name: 'rating',
             type: 'rating',
-            title: 'Rating'
-        }, {
+            title: 'Rating',
+            order: 2,
+            display: true,
+            icon: "grade"
+        }, 
+        {
             name: 'year',
             type: 'number',
-            title: 'Year'
+            title: 'Year',
+            order: 3,
+            display: true
         }];
     dataSource = new MatTableDataSource<any>(); // TODO - replace any with a generic type
     length = 0;
