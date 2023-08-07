@@ -3,7 +3,7 @@ export interface ColumnMetaModel {
     type: string;
     title: string;
     order: number;
-    width?: string;
+    width: number;
     display: boolean;
     icon?: string;
 }

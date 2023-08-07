@@ -3,6 +3,7 @@ import { DataService } from './data.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
 import { ColumnMetaModel } from 'src/model/column-meta/column.meta.model';
+import { withDebugTracing } from '@angular/router';
 
 @Component({
     selector: 'app-root',
@@ -20,14 +21,16 @@ export class AppComponent {
             type: 'string',
             title: 'Name',
             order: 0,
-            display: true
+            display: true,
+            width:20
         },
         {
             name: 'genre',
             type: 'array',
             title: 'Genre',
             order: 1,
-            display: true
+            display: true,
+            width:20
         }, 
         {
             name: 'rating',
@@ -35,14 +38,16 @@ export class AppComponent {
             title: 'Rating',
             order: 2,
             display: true,
-            icon: "grade"
+            icon: "grade",
+            width:20
         }, 
         {
             name: 'year',
             type: 'number',
             title: 'Year',
             order: 3,
-            display: true
+            display: true,
+            width:20
         }];
     dataSource = new MatTableDataSource<any>(); // TODO - replace any with a generic type
     length = 0;

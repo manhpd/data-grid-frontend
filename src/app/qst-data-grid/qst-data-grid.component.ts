@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, EventEmitter, Injector, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Injector, Input, Output, Renderer2, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -12,7 +12,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { FormsModule } from '@angular/forms';
 import { FilterItemDirective } from './filter-item.directive';
 import { ClickStopPropagation } from './menu-button.directive';
-import {  CdkDragDrop, CdkDragStart, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragStart, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ColumnMetaModel } from 'src/model/column-meta/column.meta.model';
 import { CellMap } from './cell-component/cell.map';
@@ -66,6 +66,7 @@ export class QstDataGridComponent implements AfterViewInit {
 
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatTable, { read: ElementRef }) private matTableRef!: ElementRef;
 
     public opened = false;
 
@@ -76,12 +77,21 @@ export class QstDataGridComponent implements AfterViewInit {
     public conditionsList = CONDITIONS_LIST;
     public searchValue: any = {};
     public searchCondition: any = {};
+    pressed = false;
+    currentResizeIndex: number = -1;
+    startX!: number;
+    startWidth!: number;
+    isResizingRight: boolean = false;
+    resizableMousemove!: (() => void);
+    resizableMouseup!: (() => void);
 
-    constructor(private inj: Injector) {
+
+    constructor(private inj: Injector, private renderer: Renderer2) {
     }
 
     ngAfterViewInit() {
         this.paginator.page.subscribe((event) => this.onPaginateChange(event));
+        this.setTableResize(this.matTableRef.nativeElement.clientWidth);
     }
 
     onPaginateChange(event: any) {
@@ -112,10 +122,97 @@ export class QstDataGridComponent implements AfterViewInit {
 
     getInjector(value: any) {
         let injector = Injector.create([
-            { provide: InputItem, useValue: {value} }
-          ], this.inj);
-        
+            { provide: InputItem, useValue: { value } }
+        ], this.inj);
+
         return injector;
+    }
+
+    setTableResize(tableWidth: number) {
+        let totWidth = 0;
+        this.displayedColumns.forEach((column) => {
+            totWidth += column.width;
+        });
+        const scale = (tableWidth - 5) / totWidth;
+        this.displayedColumns.forEach((column) => {
+            column.width *= scale;
+            this.setColumnWidth(column);
+        });
+    }
+
+    
+    onResizeColumn(event: any, index: number) {
+        event.stopPropagation();
+        event.preventDefault();
+        console.log(event.pageX, event.target.parentElement);
+        this.checkResizing(event, index);
+        this.currentResizeIndex = index;
+        this.pressed = true;
+        this.startX = event.pageX;
+        this.startWidth = event.target.parentElement.parentElement.parentElement.clientWidth;
+        this.mouseMove(index);
+    }
+
+    private checkResizing(event: any, index: number) {
+        const cellData = this.getCellData(index);
+        if ((index === 0) || (Math.abs(event.pageX - cellData.right) < cellData.width / 2 && index !== this.displayedColumns.length - 1)) {
+            this.isResizingRight = true;
+        } else {
+            this.isResizingRight = false;
+        }
+    }
+
+    private getCellData(index: number) {
+        const headerRow = this.matTableRef.nativeElement.children[0].querySelector('tr');
+        const cell = headerRow.children[index];
+        return cell.getBoundingClientRect();
+    }
+
+    mouseMove(index: number) {
+        this.resizableMousemove = this.renderer.listen('document', 'mousemove', (event) => {
+            if (this.pressed && event.buttons) {
+                const dx = (this.isResizingRight) ? (event.pageX - this.startX) : (-event.pageX + this.startX);
+                const width = this.startWidth + dx;
+                if (this.currentResizeIndex === index && width > 50) {
+                    this.setColumnWidthChanges(index, width);
+                }
+            }
+        });
+        this.resizableMouseup = this.renderer.listen('document', 'mouseup', (event) => {
+            if (this.pressed) {
+                this.pressed = false;
+                this.currentResizeIndex = -1;
+                this.resizableMousemove();
+                this.resizableMouseup();
+            }
+        });
+    }
+
+    setColumnWidthChanges(index: number, width: number) {
+        const orgWidth = this.displayedColumns[index].width;
+        const dx = width - orgWidth;
+        if (dx !== 0) {
+            const j = (this.isResizingRight) ? index + 1 : index - 1;
+            const newWidth = this.displayedColumns[j].width - dx;
+            if (newWidth > 50) {
+                this.displayedColumns[index].width = width;
+                this.setColumnWidth(this.displayedColumns[index]);
+                this.displayedColumns[j].width = newWidth;
+                this.setColumnWidth(this.displayedColumns[j]);
+            }
+        }
+    }
+
+    setColumnWidth(column: ColumnMetaModel) {
+        const columnEls = Array.from(document.getElementsByClassName('mat-column-' + column.name));
+        columnEls.forEach((el: any) => {
+            el.style.width = column.width + 'px';
+        });
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event: any) {
+        this.setTableResize(this.matTableRef.nativeElement.clientWidth);
     }
 }
 
