@@ -144,7 +144,6 @@ export class QstDataGridComponent implements AfterViewInit {
     onResizeColumn(event: any, index: number) {
         event.stopPropagation();
         event.preventDefault();
-        console.log(event.pageX, event.target.parentElement);
         this.checkResizing(event, index);
         this.currentResizeIndex = index;
         this.pressed = true;
