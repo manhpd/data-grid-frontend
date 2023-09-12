@@ -8,9 +8,10 @@ table {
 	width: 100%;
 }
 
-.table-header-button {
-	position: absolute;
-	right: 30px;
+.header-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .example-list {
@@ -84,10 +85,68 @@ table {
 .resize-handle {
 	display: inline-block;
 	border-right: 2px solid lightgray;
-	position: absolute;
 	top: 0;
 	right: 0;
-	height: 100%;
+	height: 40px;
 	cursor: col-resize;
 	opacity: 1;
 }
+
+.size-0 {
+
+	font-size: 10px;
+	padding: 0 4px !important;
+}
+
+.size-10 {
+
+	font-size: 12x;
+	padding: 5px 6px !important;
+}
+
+.size-20 {
+	font-size: 14px;
+	padding: 10px 8px !important;
+}
+
+.size-30 {
+	font-size: 16px;
+	padding: 15px 10px !important;
+}
+
+.size-40 {
+	font-size: 18px;
+	padding: 20px 12px !important;
+}	
+
+.size-50 {
+	font-size: 20px;
+	padding: 25px 14px !important;
+}
+
+.size-60 {
+	font-size: 22px;
+	padding: 30px 16px !important;
+}
+
+.size-70 {
+	font-size: 24px;
+	padding: 35px 18px !important;
+}
+
+.size-80 {
+	font-size: 26px;
+	padding: 40px 20px !important;
+}
+
+.size-90 {
+	font-size: 28px;
+	padding: 45px 22px !important;
+}
+
+.size-100 {
+	font-size: 30px;
+	padding: 50px 24px !important;
+}
+
+

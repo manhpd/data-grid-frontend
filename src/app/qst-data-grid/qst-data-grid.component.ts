@@ -21,6 +21,7 @@ import { TextCellComponent } from './cell-component/text-component/text.cell.com
 import { InputItem } from 'src/model/input/input.model';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSliderModule } from '@angular/material/slider';
 @Component({
     selector: 'qst-data-grid',
     styleUrls: ['qst-data-grid.component.scss'],
@@ -45,6 +46,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatProgressSpinnerModule,
         ArrayCellComponent,
         TextCellComponent,
+        MatSliderModule,
         CommonModule
     ],
 })
@@ -60,6 +62,8 @@ export class QstDataGridComponent implements AfterViewInit {
     @Input() pageIndex = 0;
     @Input() isLoading = false;
     @Input() title: string = "";
+    @Input() zoomPercentage = 50;
+
     @Output() pageChange = new EventEmitter<any>();
     @Output() sortChange = new EventEmitter<any>();
     @Output() filterChange = new EventEmitter<any>();
@@ -85,13 +89,19 @@ export class QstDataGridComponent implements AfterViewInit {
     resizableMousemove!: (() => void);
     resizableMouseup!: (() => void);
 
-
+    sizeValue = "size-";
     constructor(private inj: Injector, private renderer: Renderer2) {
     }
 
     ngAfterViewInit() {
         this.paginator.page.subscribe((event) => this.onPaginateChange(event));
         this.setTableResize(this.matTableRef.nativeElement.clientWidth);
+        this.sizeValue = "size-" + this.zoomPercentage;
+    }
+
+    onZoomChange(size: number) {
+        this.zoomPercentage = size;
+        this.sizeValue = "size-" + this.zoomPercentage;
     }
 
     onPaginateChange(event: any) {
@@ -99,6 +109,11 @@ export class QstDataGridComponent implements AfterViewInit {
     }
 
     announceSortChange(sortState: Sort) {
+        this.sortChange.emit(sortState);
+    }
+
+    sortTable(column: string, direction: 'asc' | 'desc' | '') {
+        const sortState: Sort = { active: column, direction: direction };
         this.sortChange.emit(sortState);
     }
 
@@ -140,17 +155,19 @@ export class QstDataGridComponent implements AfterViewInit {
         });
     }
 
-    
+
     onResizeColumn(event: any, index: number) {
+        console.log(event.target.parentElement);
         event.stopPropagation();
         event.preventDefault();
         this.checkResizing(event, index);
         this.currentResizeIndex = index;
         this.pressed = true;
         this.startX = event.pageX;
-        this.startWidth = event.target.parentElement.parentElement.parentElement.clientWidth;
+        this.startWidth = event.target.parentElement.parentElement.clientWidth;
         this.mouseMove(index);
     }
+
 
     private checkResizing(event: any, index: number) {
         const cellData = this.getCellData(index);
