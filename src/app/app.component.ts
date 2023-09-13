@@ -33,6 +33,46 @@ export class AppComponent {
             width:20
         }, 
         {
+            name: 'cast',
+            type: 'array',
+            title: 'Cast',
+            order: 4,
+            display: true,
+            width:20
+        },
+        {
+            name: 'budget',
+            type: 'string',
+            title: 'Budget',
+            order: 5,
+            display: true,
+            width:20
+        },
+        {
+            name: 'boxOffice',
+            type: 'string',
+            title: 'Box Office',
+            order: 6,
+            display: true,
+            width:20
+        },
+        {
+            name: 'country',
+            type: 'string',
+            title: 'Country',
+            order: 7,
+            display: true,
+            width:20
+        },
+        {
+            name: 'children',
+            type: 'string',
+            title: 'Children',
+            order: 8,
+            display: true,
+            width:20
+        },
+        {
             name: 'rating',
             type: 'rating',
             title: 'Rating',

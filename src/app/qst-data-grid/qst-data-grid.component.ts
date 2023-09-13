@@ -78,6 +78,10 @@ export class QstDataGridComponent implements AfterViewInit {
         return this.displayedColumns.filter((col) => col.display).map((column) => column.name);
     }
 
+    getDisplayedColumns(): ColumnMetaModel[] {
+        return this.displayedColumns.filter((col) => col.display);
+    }
+
     public conditionsList = CONDITIONS_LIST;
     public searchValue: any = {};
     public searchCondition: any = {};

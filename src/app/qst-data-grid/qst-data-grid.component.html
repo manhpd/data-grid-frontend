@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<div class="table-container mat-elevation-z8">
     <mat-sidenav-container>
         <mat-sidenav #sidenav mode="side" [(opened)]="opened" position="end">
             <div class="column-list" *ngFor="let col of displayedColumns">
@@ -18,7 +18,7 @@
 
             <table mat-table matSort class="mat-elevation-z8"  [dataSource]="dataSource" cdkDropList
                 (cdkDropListDropped)="drop($event)" cdkDropListOrientation="horizontal">
-                <ng-container *ngFor="let col of displayedColumns;let i = index" [matColumnDef]="col.name">
+                <ng-container *ngFor="let col of getDisplayedColumns();let i = index" [matColumnDef]="col.name">
                     <th [ngClass]="sizeValue" mat-header-cell *matHeaderCellDef cdkDragLockAxis="x" cdkDrag>
                         <div class="header-container">
                             <mat-icon *ngIf="col.icon">{{col.icon}}</mat-icon>
