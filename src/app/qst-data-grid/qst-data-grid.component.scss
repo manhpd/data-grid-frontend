@@ -4,14 +4,14 @@
 	}
 }
 
-table {
-	width: 100%;
-}
-
 .header-container {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+
+.header-left {
+	display: flex;
 }
 
 .example-list {
@@ -87,10 +87,13 @@ table {
 	border-right: 2px solid lightgray;
 	top: 0;
 	right: 0;
-	height: 40px;
+	position: relative;
+	height: inherit;
 	cursor: col-resize;
 	opacity: 1;
 }
+
+
 
 .size-0 {
 
